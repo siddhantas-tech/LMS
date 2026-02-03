@@ -4,35 +4,78 @@ import CoursePlayer from './pages/CoursePlayer';
 import DashboardPage from './pages/Dashboard';
 import CategoriesPage from './pages/Categories';
 import CategoryDetailPage from './pages/CategoryDetail';
-import { AuthProvider } from './context/AuthContext';
-import { UserProvider } from './context/UserContext';
+import AdminDashboard from './pages/admin/Dashboard';
+import NewCoursePage from './pages/admin/NewCourse';
+import { AdminRoute } from './components/layout/AdminRoute';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { UserProvider } from './components/user-provider';
+import { ThemeProvider } from './components/ui/themeProvider';
+import MainLayout from './components/layout/MainLayout';
 import './styles/index.css';
 
+// Simple Analytics placeholder for Vite
+const Analytics = () => null;
+
 const PagePlaceholder = ({ title }: { title: string }) => (
-  <div className="min-h-screen bg-background flex items-center justify-center">
-    <h1 className="text-4xl font-bold">{title} Page Coming Soon</h1>
+  <div className="min-h-screen bg-background flex flex-col items-center justify-center p-12 text-center">
+    <div className="h-20 w-20 rounded-3xl bg-primary/5 border-4 border-foreground/10 flex items-center justify-center mb-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.05)]">
+      <div className="h-10 w-10 rounded-xl bg-primary animate-pulse" />
+    </div>
+    <h1 className="text-5xl font-black uppercase tracking-tighter mb-4">{title}</h1>
+    <p className="text-xl font-bold text-muted-foreground uppercase tracking-widest italic tracking-tight">Accessing Secure Module... Connection Pending.</p>
   </div>
 );
+
+function AppContent() {
+  const { user } = useAuth();
+
+  const userData = user ? {
+    username: user.username || user.name,
+    labId: user.labId,
+    role: user.role
+  } : null;
+
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="riidl-theme">
+      <UserProvider user={userData}>
+        <Router>
+          <Routes>
+            {/* Standard User Layout */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Navigate to="/courses" replace />} />
+              <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/categories/:slug" element={<CategoryDetailPage />} />
+            </Route>
+
+            {/* Standalone Admin Dashboard (No MainLayout/Navbar) */}
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/courses" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/courses/new" element={<AdminRoute><NewCoursePage /></AdminRoute>} />
+
+            {/* Admin Placeholder Routes */}
+            <Route path="/admin/users" element={<AdminRoute><PagePlaceholder title="Personnel Management" /></AdminRoute>} />
+            <Route path="/admin/analytics" element={<AdminRoute><PagePlaceholder title="Operational Intelligence" /></AdminRoute>} />
+            <Route path="/admin/settings" element={<AdminRoute><PagePlaceholder title="System Protocol" /></AdminRoute>} />
+
+            {/* Focus Mode Routes */}
+            <Route path="/courses/:id" element={<CoursePlayer />} />
+            <Route path="/exams/:id" element={<PagePlaceholder title="Exam Simulation" />} />
+          </Routes>
+        </Router>
+        <Analytics />
+      </UserProvider>
+    </ThemeProvider>
+  );
+}
 
 function App() {
   return (
     <AuthProvider>
-      <UserProvider user={null}> {/* You can pass the actual user object here later */}
-        <Router>
-          <Routes>
-            {/* Redirect home to courses, just like your Next.js project did */}
-            <Route path="/" element={<Navigate to="/courses" replace />} />
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/courses/:id" element={<CoursePlayer />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/categories/:slug" element={<CategoryDetailPage />} />
-            <Route path="/login" element={<PagePlaceholder title="Login" />} />
-            <Route path="/signup" element={<PagePlaceholder title="Signup" />} />
-          </Routes>
-        </Router>
-      </UserProvider>
+      <AppContent />
     </AuthProvider>
   );
 }
+
 export default App;

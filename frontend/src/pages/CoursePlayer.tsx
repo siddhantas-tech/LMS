@@ -3,7 +3,6 @@ import { Play, CheckCircle, Clock, Lock, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
 import { Navbar } from '@/components/layout/Navbar'
 import { LessonQuizModal } from '@/components/course/lesson-quiz-modal'
 
@@ -56,7 +55,6 @@ const MOCK_TOPICS = [
 export default function CoursePlayerPage() {
     const [topics, setTopics] = useState(MOCK_TOPICS)
     const [currentTopicId, setCurrentTopicId] = useState(MOCK_TOPICS[0].id)
-    const [isVideoEnded, setIsVideoEnded] = useState(false)
     const [showQuizPrompt, setShowQuizPrompt] = useState(false)
     const [isQuizOpen, setIsQuizOpen] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
@@ -77,7 +75,7 @@ export default function CoursePlayerPage() {
         video.addEventListener('ratechange', enforcePlaybackRate)
         video.playbackRate = 1.0
 
-        const preventSeek = (e: Event) => {
+        const preventSeek = () => {
             // In a real app, you'd track the max time watched and prevent seeking beyond that
             // For this demo, we let users browse but the code provided wanted to enforce strictness
             // console.log("Seeking event triggered", e);
@@ -92,7 +90,6 @@ export default function CoursePlayerPage() {
     }, [currentTopic])
 
     const handleVideoEnd = () => {
-        setIsVideoEnded(true)
         if (currentTopic?.questions && currentTopic.questions.length > 0) {
             setIsQuizOpen(true)
         } else {
@@ -104,7 +101,6 @@ export default function CoursePlayerPage() {
         const topic = topics.find((t) => t.id === topicId)
         if (!topic?.isLocked) {
             setCurrentTopicId(topicId)
-            setIsVideoEnded(false)
             setShowQuizPrompt(false)
         }
     }
@@ -156,7 +152,7 @@ export default function CoursePlayerPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="overflow-hidden bg-black rounded-[2rem] shadow-2xl aspect-video flex items-center justify-center relative ring-1 ring-white/10">
+                        <div className="overflow-hidden bg-black rounded-4xl shadow-2xl aspect-video flex items-center justify-center relative ring-1 ring-white/10">
                             {currentTopic ? (
                                 <video
                                     key={currentTopic.id}
@@ -256,7 +252,7 @@ export default function CoursePlayerPage() {
                                                 </div>
                                             </div>
                                             {currentTopicId === topic.id && (
-                                                <div className="absolute top-0 right-0 h-full w-24 bg-white/5 skew-x-[30deg] translate-x-12" />
+                                                <div className="absolute top-0 right-0 h-full w-24 bg-white/5 skew-x-30 translate-x-12" />
                                             )}
                                         </button>
                                     ))}

@@ -1,41 +1,41 @@
-import { Navbar } from '../components/layout/Navbar';
-import { Button } from '../components/ui/button';
+import { Button } from '@/components/ui/button';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { MOCK_COURSES } from '../api/mockData';
+import { MOCK_COURSES } from '@/api/mockData';
 
 export default function CoursesPage() {
-    const courses = MOCK_COURSES; // Later this becomes: const [courses, setCourses] = useState([])
+    const courses = MOCK_COURSES;
 
     return (
-        <div className="min-h-screen bg-background">
-            <Navbar />
+        <div className="bg-background">
             <section className="max-w-7xl mx-auto px-6 py-12">
                 <div className="space-y-10">
                     <div className="space-y-4">
-                        <h1 className="text-4xl sm:text-6xl font-black text-gradient tracking-tight">All Courses</h1>
-                        <p className="text-lg font-medium text-muted-foreground max-w-2xl">
-                            Browse our catalog and start your learning journey today.
+                        <h1 className="text-4xl sm:text-7xl font-black text-gradient tracking-tight uppercase">Training Catalog</h1>
+                        <p className="text-xl font-bold text-muted-foreground max-w-2xl leading-relaxed">
+                            Master experimental manufacturing and design with our certified courses.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {courses.map((course) => (
-                            <div key={course.id} className="group flex flex-col overflow-hidden rounded-3xl bg-card shadow-lg transition-all hover:shadow-xl hover:-translate-y-1">
-                                <div className="aspect-video w-full relative bg-muted/20">
+                            <div key={course.id} className="group flex flex-col overflow-hidden rounded-[2.5rem] bg-card border-4 border-foreground shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-2">
+                                <div className="aspect-video w-full relative bg-muted/20 border-b-4 border-foreground">
                                     <img src={course.thumbnail_url} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                                </div>
-                                <div className="flex flex-1 flex-col p-8">
-                                    <div className="mb-6">
-                                        <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-black uppercase rounded-full border-2 border-primary mb-3">
+                                    <div className="absolute top-4 left-4">
+                                        <span className="px-4 py-2 bg-background border-4 border-foreground text-xs font-black uppercase rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                             {course.categories.name}
                                         </span>
-                                        <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
-                                        <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
                                     </div>
-                                    <Button asChild className="w-full h-14 rounded-2xl font-bold">
+                                </div>
+                                <div className="flex flex-1 flex-col p-10">
+                                    <div className="mb-8">
+                                        <h3 className="text-3xl font-black mb-4 leading-tight group-hover:text-primary transition-colors">{course.title}</h3>
+                                        <p className="text-lg font-bold text-muted-foreground line-clamp-2 leading-relaxed italic">"{course.description}"</p>
+                                    </div>
+                                    <Button asChild className="w-full h-16 rounded-2xl font-black text-lg border-4 border-foreground shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
                                         <Link to={`/courses/${course.id}`}>
-                                            Start Learning <ArrowRight className="ml-2 h-5 w-5" />
+                                            Start Learning <ArrowRight className="ml-2 h-6 w-6" />
                                         </Link>
                                     </Button>
                                 </div>

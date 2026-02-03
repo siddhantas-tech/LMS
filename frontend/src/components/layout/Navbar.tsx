@@ -15,109 +15,85 @@ export function Navbar() {
             style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}
         >
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
+                <div className="flex items-center justify-between h-20">
                     {/* Logo */}
                     <Link
                         to="/"
-                        className="flex items-center gap-2 font-black text-xl text-foreground/80"
+                        className="flex items-center gap-3 font-black text-2xl text-foreground"
                     >
-                        <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-black text-xs shadow-sm">
+                        <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)]">
                             R
                         </div>
-                        <span className="hidden sm:inline tracking-tighter">RIIDL</span>
+                        <span className="hidden sm:inline tracking-tight uppercase">RIIDL</span>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-6">
-
-                        {/* Dashboard Link */}
+                    <div className="hidden md:flex items-center gap-1 lg:gap-4">
                         <Link
                             to="/dashboard"
-                            className="flex items-center gap-2 text-foreground/80 font-bold px-3 py-2 rounded-xl h-10 transition-colors hover:bg-muted"
+                            className="flex items-center gap-2 text-foreground/80 font-bold px-4 py-2 rounded-xl transition-all hover:bg-muted hover:text-primary tracking-tight"
                         >
                             <LayoutDashboard className="h-4 w-4" />
                             <span>Dashboard</span>
                         </Link>
 
-                        {/* Courses Link */}
                         <Link
                             to="/courses"
-                            className="flex items-center gap-2 text-foreground/80 font-bold px-3 py-2 rounded-xl h-10 transition-colors hover:bg-muted"
+                            className="flex items-center gap-2 text-foreground/80 font-bold px-4 py-2 rounded-xl transition-all hover:bg-muted hover:text-primary tracking-tight"
                         >
                             <BookOpen className="h-4 w-4" />
                             <span>Courses</span>
                         </Link>
 
-                        {/* Categories Link */}
                         <Link
                             to="/categories"
-                            className="flex items-center gap-2 text-foreground/80 font-bold px-3 py-2 rounded-xl h-10 transition-colors hover:bg-muted"
+                            className="flex items-center gap-2 text-foreground/80 font-bold px-4 py-2 rounded-xl transition-all hover:bg-muted hover:text-primary tracking-tight"
                         >
                             <Grid className="h-4 w-4" />
                             <span>Categories</span>
                         </Link>
+                    </div>
 
-                        {/* Search Bar */}
-                        <div className="relative w-64">
+                    {/* Right Side Tools */}
+                    <div className="hidden md:flex items-center gap-4">
+                        <div className="relative w-48 lg:w-64">
                             <Input
                                 type="search"
-                                placeholder="Search courses..."
-                                className="pl-10 pr-4 bg-muted/30 border-border/10 rounded-xl h-10 focus:ring-2 focus:ring-primary/20 font-medium text-sm transition-all"
+                                placeholder="Search..."
+                                className="pl-10 h-11 bg-muted/50 border-border/10 rounded-2xl focus:ring-2 focus:ring-primary/20 font-bold text-sm transition-all"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
 
-                        {/* Theme Toggle */}
-                        <div className="flex items-center gap-2">
-                            <ThemeToggle />
-                        </div>
+                        <ThemeToggle />
                     </div>
 
-                    {/* Mobile Menu */}
-                    <div className="md:hidden">
+                    {/* Mobile Menu Icon */}
+                    <div className="md:hidden flex items-center gap-2">
+                        <ThemeToggle />
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-2 border-border">
                                     <Menu className="h-5 w-5" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right" className="w-80">
-                                <div className="space-y-4 mt-4">
-
-                                    <div className="space-y-2">
-                                        <h3 className="font-semibold">Search</h3>
-                                        <Input placeholder="Search courses..." />
+                            <SheetContent side="right" className="w-[300px] border-l-4 border-foreground p-0">
+                                <div className="flex flex-col h-full bg-card">
+                                    <div className="p-6 border-b-2 border-border">
+                                        <h2 className="text-2xl font-black uppercase tracking-tight">Navigation</h2>
                                     </div>
-
-                                    <div className="space-y-2">
-                                        <h3 className="font-semibold">Navigation</h3>
-                                        <Link
-                                            to="/dashboard"
-                                            className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary text-foreground"
-                                        >
-                                            <LayoutDashboard className="h-4 w-4" />
-                                            Dashboard
+                                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                        <Link to="/dashboard" className="flex items-center gap-3 p-4 rounded-2xl bg-muted/50 font-black text-lg hover:bg-primary/10 transition-colors">
+                                            <LayoutDashboard className="h-6 w-6 text-primary" /> Dashboard
                                         </Link>
-                                        <Link
-                                            to="/courses"
-                                            className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary text-foreground"
-                                        >
-                                            <BookOpen className="h-4 w-4" />
-                                            Courses
+                                        <Link to="/courses" className="flex items-center gap-3 p-4 rounded-2xl bg-muted/50 font-black text-lg hover:bg-primary/10 transition-colors">
+                                            <BookOpen className="h-6 w-6 text-primary" /> Courses
                                         </Link>
-                                        <Link
-                                            to="/categories"
-                                            className="flex items-center gap-2 p-2 rounded-md hover:bg-secondary text-foreground"
-                                        >
-                                            <Grid className="h-4 w-4" />
-                                            Categories
+                                        <Link to="/categories" className="flex items-center gap-3 p-4 rounded-2xl bg-muted/50 font-black text-lg hover:bg-primary/10 transition-colors">
+                                            <Grid className="h-6 w-6 text-primary" /> Categories
                                         </Link>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <ThemeToggle />
                                     </div>
                                 </div>
                             </SheetContent>
