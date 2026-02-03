@@ -1,5 +1,5 @@
 import { Navbar } from '../components/layout/Navbar';
-import { Button } from '../components/ui/Button';
+import { Button } from '../components/ui/button';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MOCK_COURSES } from '../api/mockData';

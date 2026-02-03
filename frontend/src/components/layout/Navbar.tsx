@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Search, Menu, BookOpen, LayoutDashboard, Grid } from "lucide-react";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { ThemeToggle } from "../ui/ThemeToggle";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/Sheet";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/themeToggle";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function Navbar() {
     const [searchQuery, setSearchQuery] = useState("");
