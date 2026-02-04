@@ -6,6 +6,12 @@ import CategoriesPage from './pages/Categories';
 import CategoryDetailPage from './pages/CategoryDetail';
 import AdminDashboard from './pages/admin/Dashboard';
 import NewCoursePage from './pages/admin/NewCourse';
+import LabsPage from './pages/admin/Labs';
+import AdminCategoriesPage from './pages/admin/Categories';
+import UsersPage from './pages/admin/Users';
+import AdminCoursesList from './pages/admin/CoursesList';
+import EditCoursePage from './pages/admin/EditCourse';
+import AdminLayout from './components/layout/AdminLayout';
 import { AdminRoute } from './components/layout/AdminRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider } from './components/user-provider';
@@ -49,15 +55,23 @@ function AppContent() {
               <Route path="/categories/:slug" element={<CategoryDetailPage />} />
             </Route>
 
-            {/* Standalone Admin Dashboard (No MainLayout/Navbar) */}
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/admin/courses" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/admin/courses/new" element={<AdminRoute><NewCoursePage /></AdminRoute>} />
+            {/* Admin Layout & Routes */}
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }>
+              <Route index element={<AdminDashboard />} />
 
-            {/* Admin Placeholder Routes */}
-            <Route path="/admin/users" element={<AdminRoute><PagePlaceholder title="Personnel Management" /></AdminRoute>} />
-            <Route path="/admin/analytics" element={<AdminRoute><PagePlaceholder title="Operational Intelligence" /></AdminRoute>} />
-            <Route path="/admin/settings" element={<AdminRoute><PagePlaceholder title="System Protocol" /></AdminRoute>} />
+              {/* Sidebar Modules */}
+              <Route path="courses" element={<AdminCoursesList />} />
+              <Route path="users" element={<UsersPage />} />
+              <Route path="categories" element={<AdminCategoriesPage />} />
+              <Route path="labs" element={<LabsPage />} />
+
+              {/* Feature Routes */}
+              <Route path="courses/new" element={<NewCoursePage />} />
+            </Route>
 
             {/* Focus Mode Routes */}
             <Route path="/courses/:id" element={<CoursePlayer />} />

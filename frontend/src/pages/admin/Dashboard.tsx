@@ -1,93 +1,89 @@
-import { Link } from "react-router-dom";
-import { Plus, Settings, Users, BookOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AdminSidebar } from "@/components/layout/Sidebar";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { TrendingUp, Activity } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminDashboardPage() {
     return (
-        <SidebarProvider>
-            <div className="min-h-screen bg-background text-foreground flex w-full">
-                <AdminSidebar />
-
-                <SidebarInset className="flex flex-col flex-1">
-                    {/* Admin Header - Minimalist & Professional */}
-                    <header className="h-16 border-b-2 border-foreground/10 bg-card sticky top-0 z-30 flex items-center px-8">
-                        <div className="flex items-center gap-4 w-full max-w-7xl mx-auto">
-                            <h2 className="font-black uppercase tracking-tighter text-lg text-primary/80">Operational Intelligence</h2>
-                            <div className="ml-auto flex items-center gap-6">
-                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
-                                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase text-green-600 tracking-widest">System Online</span>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-
-                    {/* Main Content Area */}
-                    <main className="w-full max-w-7xl mx-auto px-8 py-10">
-                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-12">
-                            <div className="space-y-2">
-                                <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase leading-none">Admin Console</h1>
-                                <p className="text-sm font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-70">Laboratory & Training Oversight Protocol</p>
-                            </div>
-                            <Button asChild className="h-16 px-8 rounded-2xl font-black text-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-foreground bg-primary hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none transition-all">
-                                <Link to="/admin/courses/new">
-                                    <Plus className="mr-2 h-6 w-6" /> NEW DEPLOYMENT
-                                </Link>
-                            </Button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                            <Card className="border-2 border-foreground rounded-4xl p-8 bg-primary/5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all">
-                                <CardContent className="p-0">
-                                    <div className="flex items-center gap-6">
-                                        <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center border-2 border-foreground shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)]">
-                                            <BookOpen className="h-7 w-7 text-primary-foreground" />
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-4xl leading-none">24</p>
-                                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest mt-1">Active Resources</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card className="border-2 border-foreground rounded-4xl p-8 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all">
-                                <CardContent className="p-0">
-                                    <div className="flex items-center gap-6">
-                                        <div className="h-14 w-14 rounded-2xl bg-green-500/10 flex items-center justify-center border-2 border-green-500/20">
-                                            <Users className="h-7 w-7 text-green-500" />
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-4xl leading-none">1,240</p>
-                                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest mt-1">Personnel Active</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card className="border-2 border-foreground rounded-4xl p-8 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all">
-                                <CardContent className="p-0">
-                                    <div className="flex items-center gap-6">
-                                        <div className="h-14 w-14 rounded-2xl bg-orange-500/10 flex items-center justify-center border-2 border-orange-500/20">
-                                            <Settings className="h-7 w-7 text-orange-500" />
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-4xl leading-none">12</p>
-                                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest mt-1">Certified Units</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        {/* Additional operational logs or quick stats could go here */}
-                        <div className="rounded-5xl border-2 border-foreground/10 bg-muted/20 p-10 text-center">
-                            <p className="font-black uppercase tracking-widest text-muted-foreground text-sm">System Diagnostics Pending... No Anomalies Detected.</p>
-                        </div>
-                    </main>
-                </SidebarInset>
+        <main className="w-full max-w-7xl mx-auto px-8 py-8">
+            {/* Dashboard Header */}
+            <div className="flex flex-col gap-1 mb-8">
+                <h1 className="text-2xl font-black tracking-tighter uppercase leading-none">Dashboard</h1>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] opacity-70">System Overview & Metrics</p>
             </div>
-        </SidebarProvider>
+
+            {/* Core Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {/* Total Users */}
+                <Card className="border-2 border-foreground rounded-xl p-6 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
+                    <CardContent className="p-0">
+                        <div className="flex flex-col h-24 justify-between">
+                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">Total Users</p>
+                            <p className="font-black text-4xl leading-none">0</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Active Courses */}
+                <Card className="border-2 border-foreground rounded-xl p-6 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
+                    <CardContent className="p-0">
+                        <div className="flex flex-col h-24 justify-between">
+                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">Active Courses</p>
+                            <p className="font-black text-4xl leading-none">0</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Total Enrollments */}
+                <Card className="border-2 border-foreground rounded-xl p-6 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
+                    <CardContent className="p-0">
+                        <div className="flex flex-col h-24 justify-between">
+                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">Total Enrollments</p>
+                            <p className="font-black text-4xl leading-none">0</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Total Revenue */}
+                <Card className="border-2 border-foreground rounded-xl p-6 bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all">
+                    <CardContent className="p-0">
+                        <div className="flex flex-col h-24 justify-between">
+                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">Total Revenue</p>
+                            <p className="font-black text-4xl leading-none">$0.00</p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Secondary Section: Trends & Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Enrollment Trend */}
+                <Card className="border-2 border-foreground rounded-xl bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+                    <CardHeader className="p-5 border-b-2 border-foreground/10 bg-muted/5">
+                        <div className="flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            <CardTitle className="text-sm font-black uppercase tracking-tight">Enrollment Trend</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-5">
+                        {/* Empty State Chart Area */}
+                        <div className="h-[150px] w-full bg-muted/5 rounded-lg border-2 border-dashed border-foreground/10 flex items-center justify-center relative overflow-hidden">
+                            <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">No Data Available</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Recent Activity */}
+                <Card className="border-2 border-foreground rounded-xl bg-card shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+                    <CardHeader className="p-5 border-b-2 border-foreground/10 bg-muted/5">
+                        <div className="flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-orange-500" />
+                            <CardTitle className="text-sm font-black uppercase tracking-tight">Recent Activity</CardTitle>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-5 min-h-[190px] flex items-center justify-center">
+                        <p className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">No Recent Activity</p>
+                    </CardContent>
+                </Card>
+            </div>
+        </main>
     );
 }
