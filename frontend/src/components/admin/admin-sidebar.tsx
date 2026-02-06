@@ -1,15 +1,15 @@
-'use client'
-
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { LayoutDashboard, BookOpen, Users, Settings, LogOut, Folder } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/admin/theme-toggle'
+
+// 1. CHANGED: Import from react-router-dom instead of next/...
+import { Link, useLocation } from 'react-router-dom'
 
 const sidebarItems = [
     {
         title: 'Dashboard',
-        href: '/admin',
+        href: '/admin', // We can keep the key name 'href' here for the data object
         icon: LayoutDashboard,
     },
     {
@@ -30,19 +30,20 @@ const sidebarItems = [
     {
         title: 'Labs',
         href: '/admin/labs',
-        icon: Settings, // Using Settings icon as placeholder or maybe a different one. BookOpen is taken.
+        icon: Settings,
     },
 ]
 
-import { ThemeToggle } from '@/components/admin/theme-toggle'
-
 export function AdminSidebar() {
-    const pathname = usePathname()
+    // 2. CHANGED: useLocation replaces usePathname
+    const location = useLocation();
+    const pathname = location.pathname;
 
     return (
         <div className="flex h-full w-64 flex-col border-r-4 border-foreground bg-background text-foreground">
             <div className="flex h-16 items-center justify-between border-b-4 border-foreground px-6">
-                <Link href="/" className="flex items-center gap-2 font-black text-xl tracking-tighter">
+                {/* 3. CHANGED: Link uses 'to' instead of 'href' */}
+                <Link to="/" className="flex items-center gap-2 font-black text-xl tracking-tighter">
                     <span className="bg-foreground text-background px-2 py-1 rounded-sm">Edu</span>Admin
                 </Link>
                 <div onClick={(e) => e.stopPropagation()}>
@@ -54,7 +55,7 @@ export function AdminSidebar() {
                     {sidebarItems.map((item, index) => (
                         <Link
                             key={index}
-                            href={item.href}
+                            to={item.href} // 3. CHANGED: 'to' instead of 'href'
                             className={cn(
                                 "flex items-center gap-3 rounded-lg px-3 py-3 font-bold transition-all hover:translate-x-1 hover:bg-secondary border-2 border-transparent",
                                 pathname === item.href ? "bg-secondary border-foreground" : "hover:text-foreground"

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Plus, Pencil, Trash2, BookOpen, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/badge";
 import {
     Table,
@@ -11,7 +11,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/Card";
 
 // Mock Data
 const MOCK_COURSES = [

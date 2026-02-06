@@ -1,5 +1,5 @@
 import { ActivityHeatmap } from "@/components/dashboard/ActivityHeatmap";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, GraduationCap, Award, Zap } from "lucide-react";
 
