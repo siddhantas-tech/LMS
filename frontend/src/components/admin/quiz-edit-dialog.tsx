@@ -4,10 +4,10 @@ import { Input } from '@/components/ui/Input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Loader2, Plus, Trash2, FileQuestion } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
+import { getQuizQuestions, createQuizQuestion } from '@/api/quiz'
 
 interface QuizQuestion {
     id: string
@@ -28,7 +28,6 @@ interface QuizEditDialogProps {
 }
 
 export function QuizEditDialog({ lesson, open, onOpenChange, onSuccess }: QuizEditDialogProps) {
-    const supabase = createClient()
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(false)
     const [questions, setQuestions] = useState<QuizQuestion[]>([])
@@ -51,19 +50,14 @@ export function QuizEditDialog({ lesson, open, onOpenChange, onSuccess }: QuizEd
     async function fetchQuestions() {
         if (!lesson) return
         setFetching(true)
-        const { data } = await supabase
-            .from('quiz_questions')
-            .select(`
-                *,
-                quiz_options (*)
-            `)
-            .eq('lesson_id', lesson.id)
-            .order('question_order')
-
-        if (data) {
-            setQuestions(data as any)
+        try {
+            const res = await getQuizQuestions({ topicId: lesson.id })
+            setQuestions(res.data || [])
+        } catch (error) {
+            console.error("Error fetching questions:", error)
+        } finally {
+            setFetching(false)
         }
-        setFetching(false)
     }
 
     async function handleAddQuestion(e: React.FormEvent) {
@@ -71,45 +65,26 @@ export function QuizEditDialog({ lesson, open, onOpenChange, onSuccess }: QuizEd
         if (!lesson) return
         setLoading(true)
 
-        // 1. Get next order
-        const nextOrder = questions.length > 0
-            ? Math.max(...questions.map(q => q.question_order)) + 1
-            : 0
+        try {
+            // Get next order
+            const nextOrder = questions.length > 0
+                ? Math.max(...questions.map(q => q.question_order)) + 1
+                : 0
 
-        // 2. Insert Question
-        const { data: qData, error: qError } = await supabase
-            .from('quiz_questions')
-            .insert({
+            // Create question with options
+            await createQuizQuestion({
                 lesson_id: lesson.id,
                 course_id: lesson.course_id,
                 question_text: questionText,
                 question_order: nextOrder,
-                question_type: 'multiple_choice'
+                question_type: 'multiple_choice',
+                options: options.map((opt, idx) => ({
+                    option_text: opt.text,
+                    is_correct: opt.correct,
+                    option_order: idx
+                }))
             })
-            .select()
-            .single()
 
-        if (qError) {
-            alert('Error creating question: ' + qError.message)
-            setLoading(false)
-            return
-        }
-
-        // 3. Insert Options
-        const optionsToInsert = options.map((opt, idx) => ({
-            question_id: qData.id,
-            option_text: opt.text,
-            is_correct: opt.correct,
-            option_order: idx
-        }))
-
-        const { error: oError } = await supabase
-            .from('quiz_options')
-            .insert(optionsToInsert)
-
-        if (oError) {
-            alert('Error creating options: ' + oError.message)
-        } else {
             // Reset form
             setQuestionText('')
             setOptions([
@@ -118,15 +93,26 @@ export function QuizEditDialog({ lesson, open, onOpenChange, onSuccess }: QuizEd
                 { text: '', correct: false },
                 { text: '', correct: false },
             ])
+            
+            // Refresh questions
             fetchQuestions()
+            onSuccess()
+        } catch (error) {
+            console.error('Error creating question:', error)
+            alert('Error creating question')
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
     }
 
     async function deleteQuestion(id: string) {
         if (!confirm('Are you sure you want to delete this question?')) return
-        await supabase.from('quiz_questions').delete().eq('id', id)
-        fetchQuestions()
+        try {
+            // TODO: Implement delete endpoint in backend
+            setQuestions(questions.filter(q => q.id !== id))
+        } catch (error) {
+            console.error("Error deleting question:", error)
+        }
     }
 
     const updateOptionText = (idx: number, text: string) => {

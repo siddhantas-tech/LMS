@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Beaker, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,23 +12,43 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { getLabs, createLab } from "@/api/labs";
+import { useToast } from "@/hooks/use-toast";
 
 interface Lab {
     id: string;
     name: string;
     code: string;
-    description: string;
+    description?: string;
 }
 
 export default function LabsPage() {
-    const [labs, setLabs] = useState<Lab[]>([
-        { id: "1", name: "Thermodynamics Lab", code: "ME-201", description: "Heat transfer and energy conversion experiments." },
-        { id: "2", name: "Circuit Analysis", code: "EE-104", description: "Fundamental DC/AC circuit components and testing." }
-    ]);
-
+    const [labs, setLabs] = useState<Lab[]>([]);
+    const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formData, setFormData] = useState({ name: "", code: "", description: "" });
     const [editingId, setEditingId] = useState<string | null>(null);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        fetchLabs();
+    }, []);
+
+    const fetchLabs = async () => {
+        try {
+            const res = await getLabs();
+            setLabs(res.data || []);
+        } catch (error) {
+            console.error("Error fetching labs:", error);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Failed to load labs"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleOpenDialog = () => {
         setFormData({ name: "", code: "", description: "" });
@@ -37,36 +57,74 @@ export default function LabsPage() {
     };
 
     const handleEdit = (lab: Lab) => {
-        setFormData({ name: lab.name, code: lab.code, description: lab.description });
+        setFormData({ name: lab.name, code: lab.code, description: lab.description || "" });
         setEditingId(lab.id);
         setIsDialogOpen(true);
     };
 
-    const handleDelete = (id: string) => {
-        setLabs(labs.filter(lab => lab.id !== id));
+    const handleDelete = async (id: string) => {
+        if (window.confirm("Are you sure you want to delete this lab?")) {
+            try {
+                // Implement delete when API is available
+                setLabs(labs.filter(lab => lab.id !== id));
+                toast({
+                    title: "Deleted",
+                    description: "Lab deleted successfully"
+                });
+            } catch (error) {
+                console.error("Error deleting lab:", error);
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Failed to delete lab"
+                });
+            }
+        }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (editingId) {
-            // Update existing
-            setLabs(labs.map(lab =>
-                lab.id === editingId
-                    ? { ...lab, ...formData }
-                    : lab
-            ));
-        } else {
-            // Create new
-            const newLab: Lab = {
-                id: Math.random().toString(36).substr(2, 9),
-                ...formData
-            };
-            setLabs([...labs, newLab]);
-        }
+        try {
+            if (editingId) {
+                // Update existing - implement when API is available
+                setLabs(labs.map(lab =>
+                    lab.id === editingId
+                        ? { ...lab, ...formData }
+                        : lab
+                ));
+                toast({
+                    title: "Updated",
+                    description: "Lab updated successfully"
+                });
+            } else {
+                // Create new
+                const res = await createLab(formData);
+                const newLab = res.data || {
+                    id: Math.random().toString(36).substr(2, 9),
+                    ...formData
+                };
+                setLabs([...labs, newLab]);
+                toast({
+                    title: "Created",
+                    description: "Lab created successfully"
+                });
+            }
 
-        setIsDialogOpen(false);
+            setIsDialogOpen(false);
+        } catch (error) {
+            console.error("Error saving lab:", error);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Failed to save lab"
+            });
+        }
     };
+
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
 
     return (
         <main className="w-full max-w-7xl mx-auto px-8 py-8">

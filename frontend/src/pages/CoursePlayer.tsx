@@ -1,63 +1,84 @@
 import { useState, useRef, useEffect } from 'react'
 import { Play, CheckCircle, Clock, Lock, ArrowLeft } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
+import { Link, useParams } from 'react-router-dom'
+import { Button } from '@/components/ui/Button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Navbar } from '@/components/layout/Navbar'
 import { LessonQuizModal } from '@/components/course/lesson-quiz-modal'
+import { getLessonsByCourse } from '@/api/lessons'
+import { getQuizByTopic } from '@/api/quiz'
 
-// Mock data internal to this page for simulation
-const MOCK_TOPICS = [
-    {
-        id: '1',
-        title: 'Welcome to the Course',
-        duration: 5,
-        completed: false,
-        isLocked: false,
-        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-        description: 'A quick introduction to what you will learn in this module.',
-        questions: [
-            {
-                id: 'q1',
-                question: 'What is the main focus of this module?',
-                options: [
-                    'Introduction and Basics',
-                    'Advanced Techniques',
-                    'Final Project',
-                ],
-                correctAnswer: 0,
-            }
-        ]
-    },
-    {
-        id: '2',
-        title: 'Module 1: Fundamental Concepts',
-        duration: 15,
-        completed: false,
-        isLocked: true,
-        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-        description: 'Deep dive into the core principles and fundamental concepts.',
-        questions: [
-            {
-                id: 'q2',
-                question: 'Why is this concept important?',
-                options: [
-                    'It creates a solid foundation',
-                    'It is just a theory',
-                    'No reason',
-                ],
-                correctAnswer: 0,
-            }
-        ]
-    }
-]
+interface Lesson {
+  id: string;
+  title: string;
+  duration: number;
+  completed: boolean;
+  isLocked: boolean;
+  videoUrl: string;
+  description: string;
+  topicId: string;
+  questions: QuizQuestion[];
+}
+
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+}
 
 export default function CoursePlayerPage() {
-    const [topics, setTopics] = useState(MOCK_TOPICS)
-    const [currentTopicId, setCurrentTopicId] = useState(MOCK_TOPICS[0].id)
-    const [showQuizPrompt, setShowQuizPrompt] = useState(false)
-    const [isQuizOpen, setIsQuizOpen] = useState(false)
-    const videoRef = useRef<HTMLVideoElement>(null)
+    const { courseId } = useParams();
+    const [topics, setTopics] = useState<Lesson[]>([]);
+    const [currentTopicId, setCurrentTopicId] = useState<string | null>(null);
+    const [showQuizPrompt, setShowQuizPrompt] = useState(false);
+    const [isQuizOpen, setIsQuizOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const fetchLessonsAndQuizzes = async () => {
+            setLoading(true);
+            try {
+                if (!courseId) return;
+                const res = await getLessonsByCourse(courseId);
+                const lessonsRaw = res.data;
+                // lessonsRaw should be an array of lessons with topicId or id
+                const lessons: Lesson[] = await Promise.all(
+                    lessonsRaw.map(async (lesson: any, idx: number) => {
+                        let questions: QuizQuestion[] = [];
+                        try {
+                            const quizRes = await getQuizByTopic(lesson.id);
+                            // Map backend quiz format to QuizQuestion[]
+                            questions = (quizRes.data?.questions || []).map((q: any) => ({
+                                id: q.id,
+                                question: q.question_text,
+                                options: q.options.map((opt: any) => opt.option_text),
+                                correctAnswer: q.options.findIndex((opt: any) => opt.is_correct),
+                            }));
+                        } catch (e) {
+                            // No quiz for this lesson
+                        }
+                        return {
+                            id: lesson.id,
+                            title: lesson.title,
+                            duration: lesson.duration || 0,
+                            completed: false,
+                            isLocked: idx !== 0, // Only first lesson unlocked
+                            videoUrl: lesson.video_url || '',
+                            description: lesson.description || '',
+                            topicId: lesson.id,
+                            questions,
+                        };
+                    })
+                );
+                setTopics(lessons);
+                setCurrentTopicId(lessons.length > 0 ? lessons[0].id : null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLessonsAndQuizzes();
+    }, [courseId]);
 
     const currentTopic = topics.find((t) => t.id === currentTopicId)
 
@@ -130,9 +151,12 @@ export default function CoursePlayerPage() {
         }
     }
 
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
+
     return (
         <div className="bg-background min-h-screen">
-
             <div className="bg-card shadow-sm border-b border-border/5">
                 <div className="max-w-7xl mx-auto px-6 py-10">
                     <div className="flex items-center gap-4 mb-4">
@@ -140,7 +164,7 @@ export default function CoursePlayerPage() {
                             <ArrowLeft className="h-4 w-4" /> Back to Courses
                         </Link>
                     </div>
-                    <h1 className="text-4xl sm:text-5xl font-black text-foreground tracking-tight">Introduction to Manufacturing</h1>
+                    <h1 className="text-4xl sm:text-5xl font-black text-foreground tracking-tight">Course Player</h1>
                     <p className="text-muted-foreground font-bold mt-4 flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                         Progress: {topics.filter(t => t.completed).length} of {topics.length} topics completed
@@ -150,7 +174,6 @@ export default function CoursePlayerPage() {
 
             <div className="max-w-7xl mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-
                     <div className="lg:col-span-2 space-y-8">
                         <div className="overflow-hidden bg-black rounded-4xl shadow-2xl aspect-video flex items-center justify-center relative ring-1 ring-white/10">
                             {currentTopic ? (

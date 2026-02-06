@@ -20,6 +20,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
+import { getLabs, getLabsForCourse, assignLabToCourse } from '@/api/labs'
 
 interface Lab {
     id: string
@@ -41,23 +42,22 @@ export function CourseLabsSelector({ courseId }: { courseId: string }) {
 
     async function fetchLabs() {
         try {
-            const res = await fetch('/api/labs')
-            if (res.ok) {
-                const data = await res.json()
-                setLabs(data)
-            }
+            const res = await getLabs()
+            setLabs(res.data || [])
         } catch (e) {
             console.error(e)
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Failed to load labs"
+            })
         }
     }
 
     async function fetchAssignments() {
         try {
-            const res = await fetch(`/api/courses/${courseId}/labs`)
-            if (res.ok) {
-                const data: Lab[] = await res.json()
-                setSelectedLabIds(data.map(l => l.id))
-            }
+            const res = await getLabsForCourse(courseId)
+            setSelectedLabIds((res.data || []).map((l: Lab) => l.id))
         } catch (e) {
             console.error(e)
         }
@@ -71,15 +71,7 @@ export function CourseLabsSelector({ courseId }: { courseId: string }) {
         setSelectedLabIds(newSelected)
 
         try {
-            const res = await fetch(`/api/courses/${courseId}/labs`, {
-                method: 'POST',
-                body: JSON.stringify({ labIds: newSelected }),
-                headers: { 'Content-Type': 'application/json' }
-            })
-
-            if (!res.ok) {
-                throw new Error('Failed to update assignments')
-            }
+            await assignLabToCourse(courseId, { labIds: newSelected })
 
             toast({
                 title: "Updated",
@@ -92,7 +84,7 @@ export function CourseLabsSelector({ courseId }: { courseId: string }) {
                 title: "Error",
                 description: "Failed to save changes"
             })
-            // Revert (optimistic update would be better but simple is fine)
+            // Revert
             fetchAssignments()
         }
     }
