@@ -8,7 +8,7 @@ import {
     ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/ui/themeToggle";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import {
     Sidebar,
     SidebarContent,

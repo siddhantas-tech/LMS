@@ -1,6 +1,6 @@
 import { LayoutDashboard, BookOpen, Users, Settings, LogOut, Folder } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { ThemeToggle } from '@/components/admin/theme-toggle'
 
 // 1. CHANGED: Import from react-router-dom instead of next/...
