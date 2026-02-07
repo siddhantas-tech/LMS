@@ -19,7 +19,6 @@ import { ThemeProvider } from './components/ui/themeProvider';
 import MainLayout from './components/layout/MainLayout';
 import './styles/index.css';
 
-// Simple Analytics placeholder for Vite
 const Analytics = () => null;
 
 const PagePlaceholder = ({ title }: { title: string }) => (
@@ -55,27 +54,27 @@ function AppContent() {
               <Route path="/categories/:slug" element={<CategoryDetailPage />} />
             </Route>
 
-            {/* Admin Layout & Routes */}
+            {/* Admin Layout & Routes - Notice 'admin' is lowercase */}
             <Route path="/admin" element={
               <AdminRoute>
                 <AdminLayout />
               </AdminRoute>
             }>
               <Route index element={<AdminDashboard />} />
-
-              {/* Sidebar Modules */}
               <Route path="courses" element={<AdminCoursesList />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="categories" element={<AdminCategoriesPage />} />
               <Route path="labs" element={<LabsPage />} />
-
-              {/* Feature Routes */}
               <Route path="courses/new" element={<NewCoursePage />} />
+              <Route path="courses/edit/:id" element={<EditCoursePage />} />
             </Route>
 
             {/* Focus Mode Routes */}
             <Route path="/courses/:id" element={<CoursePlayer />} />
             <Route path="/exams/:id" element={<PagePlaceholder title="Exam Simulation" />} />
+
+            {/* 404 Redirect: If no route matches, send them to /courses */}
+            <Route path="*" element={<Navigate to="/courses" replace />} />
           </Routes>
         </Router>
         <Analytics />
