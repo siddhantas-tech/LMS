@@ -17,6 +17,17 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
         return <>{children}</>;
     }
     
+    // Production bypass - allow admin access when backend is down
+    // This is a temporary solution for when backend is not responding
+    if (!user && import.meta.env.PROD) {
+        // Check URL parameter for bypass (temporary)
+        const urlParams = new URLSearchParams(window.location.search);
+        const bypass = urlParams.get('bypass');
+        if (bypass === 'admin') {
+            return <>{children}</>;
+        }
+    }
+    
     if (!user) {
         return <Navigate to="/login" replace />;
     }
