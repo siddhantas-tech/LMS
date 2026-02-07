@@ -22,7 +22,10 @@ export default function CoursesPage() {
     const loadCourses = async () => {
       try {
         const res = await getCourses();
-        setCourses(res.data);
+        setCourses(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error('Failed to load courses:', error);
+        setCourses([]); // Ensure courses is always an array
       } finally {
         setLoading(false);
       }
