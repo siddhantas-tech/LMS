@@ -8,8 +8,6 @@ interface AdminRouteProps {
 export const AdminRoute = ({ children }: AdminRouteProps) => {
     const { user, loading } = useAuth();
     
-    console.log('AdminRoute - User:', user, 'Loading:', loading);
-    
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
@@ -18,12 +16,10 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
         return <Navigate to="/login" replace />;
     }
     
-    // Check if user has admin role (adjust based on your user structure)
+    // Check if user has admin role
     if (user.role !== 'admin') {
-        console.log('User is not admin, redirecting to courses');
         return <Navigate to="/courses" replace />;
     }
     
-    console.log('Admin access granted');
     return <>{children}</>;
 };

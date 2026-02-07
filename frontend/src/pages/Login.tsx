@@ -25,22 +25,18 @@ const Login = () => {
             
             console.log('Login successful, redirecting to:', role === 'admin' ? '/admin' : '/courses');
             window.location.href = role === 'admin' ? '/admin' : '/courses';
+            
         } catch (error: any) {
             console.error('Dev login failed:', error);
             console.error('Error response:', error.response);
             console.error('Error message:', error.message);
             
-            // Fallback: create a mock token for testing
-            if (import.meta.env.DEV) {
-                console.log('Using fallback mock token for development');
-                const mockToken = 'mock-jwt-token-for-development';
-                const userData = {
-                    username: `dev-${role}`,
-                    role: role,
-                    name: `Dev ${role.charAt(0).toUpperCase() + role.slice(1)}`
-                };
-                login(mockToken, userData);
-                window.location.href = role === 'admin' ? '/admin' : '/courses';
+            if (error.response?.status === 404) {
+                alert('Backend endpoint not found. Check if the backend is running and has the /dev/generate-token endpoint.');
+            } else if (error.response?.status === 500) {
+                alert('Backend server error. Check backend logs.');
+            } else {
+                alert('Login failed: ' + (error.message || 'Unknown error'));
             }
         } finally {
             setLoading(false);
