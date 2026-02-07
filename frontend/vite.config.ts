@@ -10,5 +10,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://learning-management-system-be.onrender.com',
+        changeOrigin: true,
+        secure: true,
+      }
+    }
+  }
 });
 

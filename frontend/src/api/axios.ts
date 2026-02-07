@@ -1,9 +1,9 @@
 import axios from "axios";
 
-// Use Vercel proxy in production, direct API in development
+// Use Vercel proxy in production, Vite dev proxy in development
 const BASE_URL = import.meta.env.PROD 
   ? "/api/proxy/api" 
-  : import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+  : "/api";  // Vite dev proxy will forward to backend
 
 const api = axios.create({
   baseURL: BASE_URL,
