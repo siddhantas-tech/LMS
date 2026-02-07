@@ -43,9 +43,10 @@ export function CourseLabsSelector({ courseId }: { courseId: string }) {
     async function fetchLabs() {
         try {
             const res = await getLabs()
-            setLabs(res.data || [])
+            setLabs(Array.isArray(res.data) ? res.data : [])
         } catch (e) {
             console.error(e)
+            setLabs([]) // Ensure labs is always an array
             toast({
                 variant: "destructive",
                 title: "Error",
@@ -57,9 +58,11 @@ export function CourseLabsSelector({ courseId }: { courseId: string }) {
     async function fetchAssignments() {
         try {
             const res = await getLabsForCourse(courseId)
-            setSelectedLabIds((res.data || []).map((l: Lab) => l.id))
+            const data = Array.isArray(res.data) ? res.data : []
+            setSelectedLabIds(data.map((l: Lab) => l.id))
         } catch (e) {
             console.error(e)
+            setSelectedLabIds([]) // Ensure selectedLabIds is always an array
         }
     }
 

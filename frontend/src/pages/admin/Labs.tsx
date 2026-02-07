@@ -37,9 +37,10 @@ export default function LabsPage() {
     const fetchLabs = async () => {
         try {
             const res = await getLabs();
-            setLabs(res.data || []);
+            setLabs(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error("Error fetching labs:", error);
+            setLabs([]); // Ensure labs is always an array
             toast({
                 variant: "destructive",
                 title: "Error",
