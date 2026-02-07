@@ -1,8 +1,25 @@
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
+
 interface AdminRouteProps {
     children: React.ReactNode;
 }
 
 export const AdminRoute = ({ children }: AdminRouteProps) => {
-    // Access is now open since login/signup were removed
+    const { user, loading } = useAuth();
+    
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
+    
+    if (!user) {
+        return <Navigate to="/login" replace />;
+    }
+    
+    // Check if user has admin role (adjust based on your user structure)
+    if (user.role !== 'admin') {
+        return <Navigate to="/courses" replace />;
+    }
+    
     return <>{children}</>;
 };
