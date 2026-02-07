@@ -41,7 +41,7 @@ export default function CoursePlayerPage() {
             try {
                 if (!courseId) return;
                 const res = await getLessonsByCourse(courseId);
-                const lessonsRaw = res.data;
+                const lessonsRaw = Array.isArray(res.data) ? res.data : [];
                 // lessonsRaw should be an array of lessons with topicId or id
                 const lessons: Lesson[] = await Promise.all(
                     lessonsRaw.map(async (lesson: any, idx: number) => {
@@ -49,11 +49,12 @@ export default function CoursePlayerPage() {
                         try {
                             const quizRes = await getQuizByTopic(lesson.id);
                             // Map backend quiz format to QuizQuestion[]
-                            questions = (quizRes.data?.questions || []).map((q: any) => ({
+                            const quizData = Array.isArray(quizRes.data?.questions) ? quizRes.data.questions : [];
+                            questions = quizData.map((q: any) => ({
                                 id: q.id,
                                 question: q.question_text,
-                                options: q.options.map((opt: any) => opt.option_text),
-                                correctAnswer: q.options.findIndex((opt: any) => opt.is_correct),
+                                options: Array.isArray(q.options) ? q.options.map((opt: any) => opt.option_text) : [],
+                                correctAnswer: Array.isArray(q.options) ? q.options.findIndex((opt: any) => opt.is_correct) : 0,
                             }));
                         } catch (e) {
                             // No quiz for this lesson
