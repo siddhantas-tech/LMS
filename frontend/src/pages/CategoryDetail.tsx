@@ -31,7 +31,8 @@ export default function CategoryDetailPage() {
     const loadData = async () => {
       try {
         const categoryRes = await getCategories();
-        const foundCategory = categoryRes.data.find(
+        const categories = Array.isArray(categoryRes.data) ? categoryRes.data : [];
+        const foundCategory = categories.find(
           (c: Category) => c.slug === slug
         );
 
@@ -44,11 +45,16 @@ export default function CategoryDetailPage() {
         setCategory(foundCategory);
 
         const coursesRes = await getCourses();
-        const filteredCourses = coursesRes.data.filter(
+        const courses = Array.isArray(coursesRes.data) ? coursesRes.data : [];
+        const filteredCourses = courses.filter(
           (course: Course) => course.category_id === foundCategory.id
         );
 
         setCourses(filteredCourses);
+      } catch (error) {
+        console.error('Failed to load category details:', error);
+        setCategory(null);
+        setCourses([]); // Ensure courses is always an array
       } finally {
         setLoading(false);
       }
