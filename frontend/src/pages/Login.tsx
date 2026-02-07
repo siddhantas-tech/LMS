@@ -9,17 +9,39 @@ const Login = () => {
     const handleDevLogin = async (role: string) => {
         setLoading(true);
         try {
+            console.log('Attempting dev login for role:', role);
             const response = await generateDevToken(role);
+            console.log('API response:', response);
+            
             const token = response.data.token;
             const userData = {
                 username: `dev-${role}`,
                 role: role,
                 name: `Dev ${role.charAt(0).toUpperCase() + role.slice(1)}`
             };
+            
+            console.log('Logging in with:', { token: token.substring(0, 20) + '...', userData });
             login(token, userData);
+            
+            console.log('Login successful, redirecting to:', role === 'admin' ? '/admin' : '/courses');
             window.location.href = role === 'admin' ? '/admin' : '/courses';
-        } catch (error) {
+        } catch (error: any) {
             console.error('Dev login failed:', error);
+            console.error('Error response:', error.response);
+            console.error('Error message:', error.message);
+            
+            // Fallback: create a mock token for testing
+            if (import.meta.env.DEV) {
+                console.log('Using fallback mock token for development');
+                const mockToken = 'mock-jwt-token-for-development';
+                const userData = {
+                    username: `dev-${role}`,
+                    role: role,
+                    name: `Dev ${role.charAt(0).toUpperCase() + role.slice(1)}`
+                };
+                login(mockToken, userData);
+                window.location.href = role === 'admin' ? '/admin' : '/courses';
+            }
         } finally {
             setLoading(false);
         }
