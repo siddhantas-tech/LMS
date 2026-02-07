@@ -12,6 +12,11 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     }
     
+    // Development bypass - allow access without authentication
+    if (import.meta.env.DEV) {
+        return <>{children}</>;
+    }
+    
     if (!user) {
         return <Navigate to="/login" replace />;
     }
