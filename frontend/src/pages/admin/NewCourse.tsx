@@ -45,7 +45,10 @@ export default function NewCoursePage() {
     const loadCategories = async () => {
       try {
         const res = await getCategories();
-        setCategories(res.data);
+        setCategories(Array.isArray(res.data) ? res.data : []);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+        setCategories([]); // Ensure categories is always an array
       } finally {
         setLoadingCategories(false);
       }

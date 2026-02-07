@@ -36,7 +36,7 @@ export default function CategoriesPage() {
   ---------------------------------- */
   const fetchCategories = async () => {
     const res = await getCategories();
-    setCategories(res.data);
+    setCategories(Array.isArray(res.data) ? res.data : []);
   };
 
   useEffect(() => {

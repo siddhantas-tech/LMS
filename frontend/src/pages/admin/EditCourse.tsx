@@ -79,8 +79,8 @@ export default function EditCoursePage() {
       getLabs(),
     ]);
 
-    setCategories(catRes.data);
-    setLabs(labRes.data);
+    setCategories(Array.isArray(catRes.data) ? catRes.data : []);
+    setLabs(Array.isArray(labRes.data) ? labRes.data : []);
 
     // TODO: load course + topics by id
   };

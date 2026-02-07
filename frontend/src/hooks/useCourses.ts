@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getCourses } from '../api/courses';
 
+interface Course {
+    id: string;
+    title: string;
+    description: string;
+}
+
 export const useCourses = () => {
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -10,9 +16,10 @@ export const useCourses = () => {
         const fetchCourses = async () => {
             try {
                 const response = await getCourses();
-                setCourses(response.data);
+                setCourses(Array.isArray(response.data) ? response.data : []);
             } catch (err: any) {
                 setError(err.message || 'Failed to fetch courses');
+                setCourses([]); // Ensure courses is always an array
             } finally {
                 setLoading(false);
             }
